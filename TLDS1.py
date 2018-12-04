@@ -40,7 +40,7 @@ def server():
     exit()
 
 def createDict():
-    fin = open("PROJ2-DNSCOM.txt", "r"); #Open the file and insert all data into the dictionary
+    fin = open("PROJ3-TLDS1.txt", "r"); #Open the file and insert all data into the dictionary
     flines = fin.readlines();
     for x in flines:
         splitStr = x.split();
