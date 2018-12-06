@@ -6,6 +6,7 @@ import hmac
 import socket as mysoc
 
 dns = {};
+key = ""
 
 def server():
     try:
@@ -35,11 +36,12 @@ def server():
         else:
             digest = hmac.new(key.encode(), msg.encode('utf-8'))
             data = lookUp(msg) #Look up data sent in dictionary table
-            csockid.sendall(digest.encode('utf-8'))
+            csockid.sendall(digest.hexdigest().encode('utf-8'))
 
    # Close the server socket
     ss.close()
     exit()
+
 
 def createDict():
     fin = open("PROJ3-TLDS2.txt", "r"); #Open the file and insert all data into the dictionary
@@ -51,6 +53,7 @@ def createDict():
     global key
     key = fin.readline().rstrip('\n')
 
+
 def lookUp(hostname):
     if hostname in dns:
         if dns[hostname][1] == "A": #Check flag and return value based on that
@@ -58,6 +61,7 @@ def lookUp(hostname):
     else:
         print ("Lookup was not found in dictionary at all") #If not found, return appropriate message
         return "Hostname - Error:HOST NOT FOUND"
+
 
 createDict()
 t1 = threading.Thread(name='server', target=server)
