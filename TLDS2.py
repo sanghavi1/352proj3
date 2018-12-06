@@ -1,6 +1,7 @@
 import threading
 import time
 import random
+import hmac
 
 import socket as mysoc
 
@@ -32,8 +33,9 @@ def server():
             ss.close()
             exit()
         else:
+            digest = hmac.new(key.encode(), msg.encode('utf-8'))
             data = lookUp(msg) #Look up data sent in dictionary table
-            csockid.sendall(data.encode('utf-8'))
+            csockid.sendall(digest.encode('utf-8'))
 
    # Close the server socket
     ss.close()
@@ -45,6 +47,9 @@ def createDict():
     for x in flines:
         splitStr = x.split();
         dns[splitStr[0]] = [splitStr[1], splitStr[2]] #Use hostname as key and assign flag and IP
+    fin = open("PROJ3-KEY2.txt", "r")
+    global key
+    key = fin.readline().rstrip('\n')
 
 def lookUp(hostname):
     if hostname in dns:

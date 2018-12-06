@@ -21,7 +21,7 @@ def server():
     localhost_ip=(mysoc.gethostbyname(host))
     print("[S]: Server IP address is  ", localhost_ip)
     csockid,addr=ss.accept() #Accept connection request
-    print ("[S]: Got a connection request from a client at", addr)
+    print ("[S]: Got a connection request from client at", addr)
 
     try: #Create socket for tlds1 Server
         tlds1 = mysoc.socket(mysoc.AF_INET, mysoc.SOCK_STREAM)
@@ -66,14 +66,27 @@ def server():
             tlds2.close()
             exit()
         else:
-            data = lookUp(msg, tlds1, tlds2) #Look up data sent in dictionary table
-            csockid.sendall(data.encode('utf-8'))
+            arr = msg.split(":")
+            challenge = arr[0]
+            digest = arr[1]
+            tlds1.sendall(challenge.encode('utf-8'))
+            tlds2.sendall(challenge.encode('utf-8'))
+
+            digest1 = tlds1.recv(1024)
+            digest2 = tlds2.recv(1024)
+            d1 = digest1.decode('utf-8')
+            d2 = digest2.decode('utf-8')
+            if(d1==digest):
+                server = "1"
+            elif(d2==digest):
+                server = "2"
+
 
     tlds1.sendall("disconnecting".encode('utf-8'))
     tlds2.sendall("disconnecting".encode('utf-8'))
 
     time.sleep(random.random() * 10)
-   # Close the server socket
+    #Close the server socket
     ss.close()
     #close other sockets
     tlds1.close()
@@ -86,42 +99,23 @@ def contactTLDS(server, message, tlds1, tlds2):
 
     if(server == "EDU"):
         tlds1.sendall(msg.rstrip().encode('utf-8'))
-        print("[RS]: Data sent to TLDS1 server:", msg)  # Send the data to the Server and announce it
+        print("[AS]: Data sent to TLDS1 server:", msg)  # Send the data to the Server and announce it
         data_from_server = tlds1.recv(1024) #Receive data from server, announce and decode it
         str = data_from_server.decode('utf-8')
-        print("[RS]: Data received:", str)
+        print("[AS]: Data received:", str)
 
     if server == "COM": #If the data returned from the RS Server has 'NS,' then send to TS Server
         tlds2.sendall(msg.rstrip().encode('utf-8'))
-        print("[RS]: Data sent to TLDS2 server:", msg)  # Send the data to the Server and announce it
+        print("[AS]: Data sent to TLDS2 server:", msg)  # Send the data to the Server and announce it
         data_from_server = tlds2.recv(1024)
         str = data_from_server.decode('utf-8') #Overwrite previous information with new info
-        print("[RS]: Data received:", str)
+        print("[AS]: Data received:", str)
 
     # Inform the servers that client is disconnecting
     # Close all open sockets/files
 
     return str
 
-def createDict():
-    fin = open("PROJ2-DNSRS.txt", "r") #Open the file and insert all data into the dictionary
-    flines = fin.readlines()
-    for x in flines:
-        splitStr = x.split()
-        dns[splitStr[0]] = [splitStr[1], splitStr[2]] #Use hostname as key and assign flag and IP
-
-def lookUp(hostname, tlds1, tlds2):
-    if hostname in dns:
-        return hostname + " " + dns[hostname][0] + " " + dns[hostname][1]
-    elif "edu" in hostname or "EDU" in hostname:
-        return hostname + " " + contactTLDS("EDU", hostname, tlds1, tlds2)
-    elif "com" in hostname or "COM" in hostname:
-        return hostname + " " + contactTLDS("COM", hostname, tlds1, tlds2)
-    else:
-        print ("Lookup was not found in dictionary at all")  # If not found, return appropriate message
-        return hostname+" - Error:HOST NOT FOUND"
-
-createDict()
 t1 = threading.Thread(name='server', target=server)
 t1.start()
 time.sleep(random.random()*5)

@@ -1,5 +1,7 @@
 import threading
 import socket as mysoc
+import hmac
+
 
 def client():
     try: #Create socket for RS Server
@@ -16,15 +18,20 @@ def client():
     rsss.connect(server_binding)
 
     # Open the input file and output file, the output file will be created if it doesn't exist
-    fout = open("PROJ2-HNS.txt", "r");
+    fout = open("PROJ3-HNS.txt", "r");
     fin = open("RESOLVED.txt", "w")
 
     flines = fout.readlines();
     # Read each line in the input file
     for x in flines:
-        msg = x
+        arr = x.split();
+        key = arr[0]
+        challenge = arr[1]
+        hostname = arr[2]
+        digest = hmac.new(key.encode(),challenge.encode('utf-8'))
+        msg = challenge+":"+digest
         rsss.sendall(msg.rstrip().encode('utf-8'))
-        print("[C]: Data sent to RS server:", msg)  # Send the data to the Server and announce it
+        print("[C]: Data sent to AS server:", msg)  # Send the data to the Server and announce it
         data_from_server = rsss.recv(1024) #Receive data from server, announce and decode it
         str = data_from_server.decode('utf-8')
         print("[C]: Data received:", str)
