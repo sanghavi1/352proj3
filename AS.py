@@ -36,19 +36,19 @@ def server():
         print('{} \n'.format("socket open error ", err))
 
     # Define the port on which you want to connect to the server
-    port = 38469
+    tlds1port = 38469
     sa_sameas_myaddr = mysoc.gethostbyname(mysoc.gethostname())
     # Connect to the server on local machine
     #ip = mysoc.gethostbyname("Location of the EDU")
-    server_binding = (sa_sameas_myaddr, port)
+    server_binding = (sa_sameas_myaddr, tlds1port)
 
     tlds1.connect(server_binding)
     # Define the port on which you want to connect to the server
-    port = 27463
+    tlds2port = 27463
     #ip = mysoc.gethostbyname("Location of the COM")
 
     # Connect to the server using its IP and defined port
-    server_binding = (sa_sameas_myaddr, port)
+    server_binding = (sa_sameas_myaddr, tlds2port)
     tlds2.connect(server_binding)
 
 # Continuous loop which receives data from the client
@@ -67,14 +67,13 @@ def server():
             exit()
         else:
             arr = msg.split(":")
-            print "this is arr"
-            print arr
+
             challenge = arr[0]
             digest = arr[1]
             tlds1.sendall(challenge.encode('utf-8'))
-            tlds2.sendall(challenge.encode('utf-8'))
-
             digest1 = tlds1.recv(1024)
+
+            tlds2.sendall(challenge.encode('utf-8'))
             digest2 = tlds2.recv(1024)
             d1 = digest1.decode('utf-8')
             d2 = digest2.decode('utf-8')
