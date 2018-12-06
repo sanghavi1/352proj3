@@ -11,37 +11,69 @@ key = ""
 def server():
     try:
         ss=mysoc.socket(mysoc.AF_INET, mysoc.SOCK_STREAM)
-        print("[S]: Server socket created")
+        print("[TLDS2]: Server socket created")
     except mysoc.error as err:
         print('{} \n'.format("socket open error ",err))
     server_binding=('',27463) #Set up socket
     ss.bind(server_binding)
     ss.listen(1)
     host=mysoc.gethostname()
-    print("[S]: Server host name is: ",host)
+    print("[TLDS2]: Server host name is: ",host)
     localhost_ip=(mysoc.gethostbyname(host))
-    print("[S]: Server IP address is  ",localhost_ip)
+    print("[TLDS2]: Server IP address is  ",localhost_ip)
     csockid,addr=ss.accept()#Accept connection request
-    print ("[S]: Got a connection request from a client at", addr)
+    print ("[TLDS2]: Got a connection request from a client at", addr)
 
 # Continuous loop which receives data from the client
     while 1:
         data_from_client=csockid.recv(1024) #Receive data from client
         msg = data_from_client.decode('utf-8')
-        print("[S]: Data Received: ", msg)
+        print("[TLDS2]: Data Received: ", msg)
 
         if(msg.strip() == "disconnecting"): #If disconnecting, break out of the loop
             ss.close()
             exit()
         else:
             digest = hmac.new(key.encode(), msg.encode('utf-8'))
-            data = lookUp(msg) #Look up data sent in dictionary table
+
             csockid.sendall(digest.hexdigest().encode('utf-8'))
 
    # Close the server socket
     ss.close()
     exit()
 
+def serverWithClient():
+    try:
+        css = mysoc.socket(mysoc.AF_INET, mysoc.SOCK_STREAM)
+        print("[TLDS2]: Server socket created")
+    except mysoc.error as err:
+        print('{} \n'.format("socket open error ", err))
+    server_binding = ('', 35450)  # Set up socket
+    css.bind(server_binding)
+    css.listen(1)
+    host = mysoc.gethostname()
+    print("[TLDS2]: Server host name is: ", host)
+    localhost_ip = (mysoc.gethostbyname(host))
+    print("[TLDS2]: Server IP address is  ", localhost_ip)
+    csockid, addr = css.accept()  # Accept connection request
+    print ("[TLDS2]: Got a connection request from a client at", addr)
+
+    # Continuous loop which receives data from the client
+    while 1:
+        data_from_client = csockid.recv(1024)  # Receive data from client
+        msg = data_from_client.decode('utf-8')
+        print("[TLDS2]: Data Received: ", msg)
+
+        if (msg.strip() == "disconnecting"):  # If disconnecting, break out of the loop
+            css.close()
+            exit()
+        else:
+            data = lookUp(msg)
+            csockid.sendall(data.encode('utf-8'))
+
+    # Close the server socket
+    css.close()
+    exit()
 
 def createDict():
     fin = open("PROJ3-TLDS2.txt", "r"); #Open the file and insert all data into the dictionary
@@ -66,4 +98,9 @@ def lookUp(hostname):
 createDict()
 t1 = threading.Thread(name='server', target=server)
 t1.start()
+
 time.sleep(random.random()*5)
+
+t2 = threading.Thread(name='serverWithClient', target=serverWithClient)
+t2.start()
+

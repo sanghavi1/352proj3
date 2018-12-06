@@ -26,7 +26,7 @@ def client():
         print('{} \n'.format("socket open error ", err))
 
     # Define the port on which you want to connect to the server
-    tlds1port = 55765
+    tlds1port = 35460
     sa_sameas_myaddr = mysoc.gethostbyname(mysoc.gethostname())
     # Connect to the server on local machine
     server_binding = (sa_sameas_myaddr, tlds1port)
@@ -40,7 +40,7 @@ def client():
         print('{} \n'.format("socket open error ", err))
 
     # Define the port on which you want to connect to the server
-    tlds2port = 55765
+    tlds2port = 35450
     sa_sameas_myaddr = mysoc.gethostbyname(mysoc.gethostname())
     # Connect to the server on local machine
     server_binding = (sa_sameas_myaddr, tlds2port)
@@ -59,9 +59,9 @@ def client():
         challenge = arr[1]
         hostname = arr[2]
         digest = hmac.new(key.encode(),challenge.encode('utf-8'))
-        msg = challenge+":"+digest
-        asss.sendall(msg.rstrip().encode('utf-8'))
+        msg = challenge+":"+digest.hexdigest()
         print("[C]: Data sent to AS server:", msg)
+        asss.sendall(msg.rstrip().encode('utf-8'))
         data_from_server = asss.recv(1024) #Which TLDS server to connect to
         str = data_from_server.decode('utf-8')
         print("[C]: Data received:", str)

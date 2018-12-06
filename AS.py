@@ -36,7 +36,7 @@ def server():
         print('{} \n'.format("socket open error ", err))
 
     # Define the port on which you want to connect to the server
-    port = 27463
+    port = 38469
     sa_sameas_myaddr = mysoc.gethostbyname(mysoc.gethostname())
     # Connect to the server on local machine
     #ip = mysoc.gethostbyname("Location of the EDU")
@@ -44,7 +44,7 @@ def server():
 
     tlds1.connect(server_binding)
     # Define the port on which you want to connect to the server
-    port = 38465
+    port = 27463
     #ip = mysoc.gethostbyname("Location of the COM")
 
     # Connect to the server using its IP and defined port
@@ -67,6 +67,8 @@ def server():
             exit()
         else:
             arr = msg.split(":")
+            print "this is arr"
+            print arr
             challenge = arr[0]
             digest = arr[1]
             tlds1.sendall(challenge.encode('utf-8'))

@@ -14,7 +14,7 @@ def server():
         print("[S]: Server socket created")
     except mysoc.error as err:
         print('{} \n'.format("socket open error ",err))
-    server_binding=('',38465) #Set up socket
+    server_binding=('',38469) #Set up socket
     ss.bind(server_binding)
     ss.listen(1)
     host=mysoc.gethostname()
@@ -44,18 +44,18 @@ def server():
 
 def serverWithClient():
     try:
-        ss = mysoc.socket(mysoc.AF_INET, mysoc.SOCK_STREAM)
+        css = mysoc.socket(mysoc.AF_INET, mysoc.SOCK_STREAM)
         print("[TLDS1]: Server socket created")
     except mysoc.error as err:
         print('{} \n'.format("socket open error ", err))
-    server_binding = ('', 38460)  # Set up socket
-    ss.bind(server_binding)
-    ss.listen(1)
+    server_binding = ('', 35460)  # Set up socket
+    css.bind(server_binding)
+    css.listen(1)
     host = mysoc.gethostname()
     print("[TLDS1]: Server host name is: ", host)
     localhost_ip = (mysoc.gethostbyname(host))
     print("[TLDS1]: Server IP address is  ", localhost_ip)
-    csockid, addr = ss.accept()  # Accept connection request
+    csockid, addr = css.accept()  # Accept connection request
     print ("[TLDS1]: Got a connection request from a client at", addr)
 
     # Continuous loop which receives data from the client
@@ -65,14 +65,14 @@ def serverWithClient():
         print("[TLDS1]: Data Received: ", msg)
 
         if (msg.strip() == "disconnecting"):  # If disconnecting, break out of the loop
-            ss.close()
+            css.close()
             exit()
         else:
             data = lookUp(msg)
             csockid.sendall(data.encode('utf-8'))
 
     # Close the server socket
-    ss.close()
+    css.close()
     exit()
 
 def createDict():
@@ -98,4 +98,9 @@ def lookUp(hostname):
 createDict()
 t1 = threading.Thread(name='server', target=server)
 t1.start()
+
 time.sleep(random.random()*5)
+
+t2 = threading.Thread(name='serverWithClient', target=serverWithClient)
+t2.start()
+
