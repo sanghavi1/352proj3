@@ -35,7 +35,7 @@ def server():
         else:
             digest = hmac.new(key.encode(), msg.encode('utf-8'))
             data = lookUp(msg) #Look up data sent in dictionary table
-            csockid.sendall(digest.encode('utf-8'))
+            csockid.sendall(digest.hexdigest().encode('utf-8'))
 
    # Close the server socket
     ss.close()
