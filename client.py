@@ -4,8 +4,9 @@ import hmac
 
 
 def client():
-    try: #Create socket for RS Server
-        rsss = mysoc.socket(mysoc.AF_INET, mysoc.SOCK_STREAM)
+    #AS Socket Connection
+    try:
+        asss = mysoc.socket(mysoc.AF_INET, mysoc.SOCK_STREAM)
         print("[C]: Client socket created")
     except mysoc.error as err:
         print('{} \n'.format("socket open error ", err))
@@ -15,7 +16,36 @@ def client():
     sa_sameas_myaddr = mysoc.gethostbyname(mysoc.gethostname())
     # Connect to the server on local machine
     server_binding = (sa_sameas_myaddr, port)
-    rsss.connect(server_binding)
+    asss.connect(server_binding)
+
+    #TLDS1 Socket Connection
+    try:
+        tlds1ss = mysoc.socket(mysoc.AF_INET, mysoc.SOCK_STREAM)
+        print("[C]: Client socket created")
+    except mysoc.error as err:
+        print('{} \n'.format("socket open error ", err))
+
+    # Define the port on which you want to connect to the server
+    tlds1port = 55765
+    sa_sameas_myaddr = mysoc.gethostbyname(mysoc.gethostname())
+    # Connect to the server on local machine
+    server_binding = (sa_sameas_myaddr, tlds1port)
+    tlds1ss.connect(server_binding)
+
+    #TLDS2 Socket Connection
+    try:
+        tlds2ss = mysoc.socket(mysoc.AF_INET, mysoc.SOCK_STREAM)
+        print("[C]: Client socket created")
+    except mysoc.error as err:
+        print('{} \n'.format("socket open error ", err))
+
+    # Define the port on which you want to connect to the server
+    tlds2port = 55765
+    sa_sameas_myaddr = mysoc.gethostbyname(mysoc.gethostname())
+    # Connect to the server on local machine
+    server_binding = (sa_sameas_myaddr, tlds2port)
+    tlds2ss.connect(server_binding)
+
 
     # Open the input file and output file, the output file will be created if it doesn't exist
     fout = open("PROJ3-HNS.txt", "r");
@@ -30,19 +60,33 @@ def client():
         hostname = arr[2]
         digest = hmac.new(key.encode(),challenge.encode('utf-8'))
         msg = challenge+":"+digest
-        rsss.sendall(msg.rstrip().encode('utf-8'))
-        print("[C]: Data sent to AS server:", msg)  # Send the data to the Server and announce it
-        data_from_server = rsss.recv(1024) #Receive data from server, announce and decode it
+        asss.sendall(msg.rstrip().encode('utf-8'))
+        print("[C]: Data sent to AS server:", msg)
+        data_from_server = asss.recv(1024) #Which TLDS server to connect to
         str = data_from_server.decode('utf-8')
         print("[C]: Data received:", str)
-        fin.write(str + '\n') #Write to file
 
-    rsss.sendall("disconnecting".encode('utf-8'))
+        if(str == "1"):
+            tlds1ss.sendall(hostname.encode('utf-8'))
+            finalHostName = tlds1ss.recv(1024)
+        elif(str == "2"):
+            tlds2ss.sendall(hostname.encode('utf-8'))
+            finalHostName = tlds2ss.recv(1024)
+
+
+        fin.write(finalHostName + '\n') #Write to file
+
+    asss.sendall("disconnecting".encode('utf-8'))
+    tlds1ss.sendall("disconnecting".encode('utf-8'))
+    tlds2ss.sendall("disconnecting".encode('utf-8'))
     # Inform the servers that client is disconnecting
     # Close all open sockets/files
     fout.close()
     fin.close()
-    rsss.close()
+    asss.close()
+    tlds1ss.close()
+    tlds2ss.close()
+
     exit()
 
 t2 = threading.Thread(name='client', target=client)

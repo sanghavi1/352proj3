@@ -35,13 +35,45 @@ def server():
             exit()
         else:
             digest = hmac.new(key.encode(), msg.encode('utf-8'))
-            data = lookUp(msg) #Look up data sent in dictionary table
+
             csockid.sendall(digest.hexdigest().encode('utf-8'))
 
    # Close the server socket
     ss.close()
     exit()
 
+def serverWithClient():
+    try:
+        ss = mysoc.socket(mysoc.AF_INET, mysoc.SOCK_STREAM)
+        print("[TLDS1]: Server socket created")
+    except mysoc.error as err:
+        print('{} \n'.format("socket open error ", err))
+    server_binding = ('', 38460)  # Set up socket
+    ss.bind(server_binding)
+    ss.listen(1)
+    host = mysoc.gethostname()
+    print("[TLDS1]: Server host name is: ", host)
+    localhost_ip = (mysoc.gethostbyname(host))
+    print("[TLDS1]: Server IP address is  ", localhost_ip)
+    csockid, addr = ss.accept()  # Accept connection request
+    print ("[TLDS1]: Got a connection request from a client at", addr)
+
+    # Continuous loop which receives data from the client
+    while 1:
+        data_from_client = csockid.recv(1024)  # Receive data from client
+        msg = data_from_client.decode('utf-8')
+        print("[TLDS1]: Data Received: ", msg)
+
+        if (msg.strip() == "disconnecting"):  # If disconnecting, break out of the loop
+            ss.close()
+            exit()
+        else:
+            data = lookUp(msg)
+            csockid.sendall(data.encode('utf-8'))
+
+    # Close the server socket
+    ss.close()
+    exit()
 
 def createDict():
     fin = open("PROJ3-TLDS1.txt", "r") #Open the file and insert all data into the dictionary

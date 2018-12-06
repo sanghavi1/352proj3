@@ -80,6 +80,10 @@ def server():
                 server = "1"
             elif(d2==digest):
                 server = "2"
+            else:
+                print("The matching digest was not found.")
+
+            csockid.sendall(server.encode('utf-8'))
 
 
     tlds1.sendall("disconnecting".encode('utf-8'))
