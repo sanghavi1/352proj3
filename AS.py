@@ -37,7 +37,7 @@ def server():
 
     # Define the port on which you want to connect to the server
     tlds1port = 38469
-    sa_sameas_myaddr = mysoc.gethostbyname(mysoc.gethostname())
+    sa_sameas_myaddr = mysoc.gethostbyname("cpp.cs.rutgers.edu")
     # Connect to the server on local machine
     #ip = mysoc.gethostbyname("Location of the EDU")
     server_binding = (sa_sameas_myaddr, tlds1port)
@@ -45,6 +45,7 @@ def server():
     tlds1.connect(server_binding)
     # Define the port on which you want to connect to the server
     tlds2port = 27463
+    sa_sameas_myaddr = mysoc.gethostbyname("java.cs.rutgers.edu")
     #ip = mysoc.gethostbyname("Location of the COM")
 
     # Connect to the server using its IP and defined port

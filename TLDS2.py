@@ -11,18 +11,18 @@ key = ""
 def server():
     try:
         ss=mysoc.socket(mysoc.AF_INET, mysoc.SOCK_STREAM)
-        print("[TLDS2]: Server socket created")
+        print("[S]: Server socket created")
     except mysoc.error as err:
         print('{} \n'.format("socket open error ",err))
     server_binding=('',27463) #Set up socket
     ss.bind(server_binding)
     ss.listen(1)
     host=mysoc.gethostname()
-    print("[TLDS2]: Server host name is: ",host)
+    print("[S]: Server host name is: ",host)
     localhost_ip=(mysoc.gethostbyname(host))
-    print("[TLDS2]: Server IP address is  ",localhost_ip)
+    print("[S]: Server IP address is  ",localhost_ip)
     csockid,addr=ss.accept()#Accept connection request
-    print ("[TLDS2]: Got a connection request from a client at", addr)
+    print ("[S]: Got a connection request from a client at", addr)
 
 # Continuous loop which receives data from the client
     while 1:

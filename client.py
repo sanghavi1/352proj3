@@ -27,7 +27,7 @@ def client():
 
     # Define the port on which you want to connect to the server
     tlds1port = 35460
-    sa_sameas_myaddr = mysoc.gethostbyname(mysoc.gethostname())
+    sa_sameas_myaddr = mysoc.gethostbyname("cpp.cs.rutgers.edu")
     # Connect to the server on local machine
     server_binding = (sa_sameas_myaddr, tlds1port)
     tlds1ss.connect(server_binding)
@@ -41,7 +41,7 @@ def client():
 
     # Define the port on which you want to connect to the server
     tlds2port = 35450
-    sa_sameas_myaddr = mysoc.gethostbyname(mysoc.gethostname())
+    sa_sameas_myaddr = mysoc.gethostbyname("java.cs.rutgers.edu")
     # Connect to the server on local machine
     server_binding = (sa_sameas_myaddr, tlds2port)
     tlds2ss.connect(server_binding)
@@ -74,7 +74,7 @@ def client():
             finalHostName = tlds2ss.recv(1024)
 
 
-        fin.write(finalHostName + '\n') #Write to file
+        fin.write(finalHostName.decode('utf-8') + '\n') #Write to file
 
     asss.sendall("disconnecting".encode('utf-8'))
     tlds1ss.sendall("disconnecting".encode('utf-8'))
