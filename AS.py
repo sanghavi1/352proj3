@@ -79,9 +79,9 @@ def server():
             d1 = digest1.decode('utf-8')
             d2 = digest2.decode('utf-8')
             if(d1==digest):
-                server = "1"
+                server = "cpp.cs.rutgers.edu"
             elif(d2==digest):
-                server = "2"
+                server = "java.cs.rutgers.edu"
             else:
                 print("The matching digest was not found.")
 

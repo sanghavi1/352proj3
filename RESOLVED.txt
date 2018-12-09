@@ -1,4 +1,4 @@
-Hostname - Error:HOST NOT FOUND
-Hostname - Error:HOST NOT FOUND
-Hostname - Error:HOST NOT FOUND
+Error:HOST NOT FOUND
+Error:HOST NOT FOUND
+Error:HOST NOT FOUND
 www.google.com 8.6.4.2 A

@@ -66,10 +66,10 @@ def client():
         str = data_from_server.decode('utf-8')
         print("[C]: Data received:", str)
 
-        if(str == "1"):
+        if(str == "cpp.cs.rutgers.edu"):
             tlds1ss.sendall(hostname.encode('utf-8'))
             finalHostName = tlds1ss.recv(1024)
-        elif(str == "2"):
+        elif(str == "java.cs.rutgers.edu"):
             tlds2ss.sendall(hostname.encode('utf-8'))
             finalHostName = tlds2ss.recv(1024)
 
