@@ -92,7 +92,7 @@ def lookUp(hostname):
             return hostname + " " + dns[hostname][0] + " " + dns[hostname][1];
     else:
         print ("Lookup was not found in dictionary at all") #If not found, return appropriate message
-        return "Error:HOST NOT FOUND"
+        return "Error: HOST NOT FOUND"
 
 
 createDict()
